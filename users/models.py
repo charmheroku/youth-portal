@@ -9,7 +9,6 @@ class CustomUser(AbstractUser):
     """
 
     email = models.EmailField(unique=True)
-    username = None
     phone = models.CharField(max_length=15, blank=True, null=True)
     birth_date = models.DateField(blank=True, null=True)
     gender = models.CharField(
@@ -22,8 +21,7 @@ class CustomUser(AbstractUser):
 
     USERNAME_FIELD = "email"
     REQUIRED_FIELDS = [
-        "first_name",
-        "last_name",
+        "username",
     ]
 
     def __str__(self):
