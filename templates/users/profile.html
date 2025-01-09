@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Profile{% endblock %}
+
+{% block content %}
+    <h2>Welcome, {{ user_profile.first_name }} {{ user_profile.last_name }}</h2>
+
+    <p>Email: {{ user_profile.email }}</p>
+    <p>Joined: {{ user_profile.date_joined }}</p>
+
+{% if user_profile.avatar %}
+    <img src="{{ user_profile.avatar.url }}" alt="Profile Picture" width="150">
+{% else %}
+    <p>No profile picture uploaded.</p>
+{% endif %}
+    <form action="{% url 'users:logout' %}" method="post" style="display: inline;">
+        {% csrf_token %}
+        <button type="submit">Logout</button>
+    </form>
+{% endblock %}
