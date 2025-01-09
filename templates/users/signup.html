@@ -1,6 +1,5 @@
 {% extends 'base.html' %}
 
-
 {% block title %}Signup{% endblock title %}
 
 {% block content %}
@@ -10,5 +9,5 @@
         {{ form.as_p }}
         <button type="submit">Register</button>
     </form>
-    <p>Already have an account? <a href="#">Login here</a></p>
+    <p>Already have an account? <a href="{% url 'users:login' %}">Login here</a></p>
 {% endblock content %}
