@@ -1,4 +1,8 @@
+from django.shortcuts import get_object_or_404, redirect
+from django.contrib import messages
 from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views import View
 from django.views.generic import (
     ListView,
     DetailView,
@@ -6,7 +10,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
-from .models import Book
+from .models import Book, Vote
 from .forms import BookForm
 
 
@@ -60,3 +64,21 @@ class BookDeleteView(DeleteView):
     model = Book
     template_name = "books/book_confirm_delete.html"
     success_url = reverse_lazy("books:book_list")
+
+
+class ToggleVoteView(LoginRequiredMixin, View):
+    """
+    Toggle voting for a book. If the user has already voted, remove the vote.
+    """
+
+    def post(self, request, *args, **kwargs):
+        book = get_object_or_404(Book, id=kwargs["pk"])
+        vote, created = Vote.objects.get_or_create(user=request.user, book=book)
+
+        if not created:
+            vote.delete()
+            messages.success(request, "Your vote has been removed.")
+        else:
+            messages.success(request, "You voted for this book!")
+
+        return redirect("books:book_list")

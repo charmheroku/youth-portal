@@ -5,6 +5,7 @@ from .views import (
     BookCreateView,
     BookUpdateView,
     BookDeleteView,
+    ToggleVoteView,
 )
 
 app_name = "books"
@@ -15,4 +16,5 @@ urlpatterns = [
     path("create/", BookCreateView.as_view(), name="book_create"),
     path("<int:pk>/update/", BookUpdateView.as_view(), name="book_update"),
     path("<int:pk>/delete/", BookDeleteView.as_view(), name="book_delete"),
+    path("vote/<int:pk>/", ToggleVoteView.as_view(), name="toggle_vote"),
 ]
