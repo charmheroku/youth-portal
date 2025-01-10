@@ -7,6 +7,8 @@ from .views import (
     BookUpdateView,
     BookDeleteView,
     GroupDetailView,
+    JoinGroupView,
+    LeaveGroupView,
     ToggleVoteView,
 )
 
@@ -25,4 +27,6 @@ urlpatterns = [
         name="finalize_voting",
     ),
     path("group/<int:pk>/", GroupDetailView.as_view(), name="group_detail"),
+    path("group/<int:pk>/join/", JoinGroupView.as_view(), name="join_group"),
+    path("group/<int:pk>/leave/", LeaveGroupView.as_view(), name="leave_group"),
 ]
