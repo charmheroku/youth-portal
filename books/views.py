@@ -10,8 +10,9 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
-from .models import Book, Vote
+from .models import Book, ReadingGroup, Vote
 from .forms import BookForm
+from .mixins import AdminRequiredMixin
 
 
 class BookListView(ListView):
@@ -82,3 +83,28 @@ class ToggleVoteView(LoginRequiredMixin, View):
             messages.success(request, "You voted for this book!")
 
         return redirect("books:book_list")
+
+
+class CreateReadingGroup(AdminRequiredMixin, View):
+    """
+    Admin finalizes voting, changes book status to 'reading' and creates a group.
+    """
+
+    def post(self, request, *args, **kwargs):
+        book = get_object_or_404(Book, pk=kwargs["pk"])
+
+        if book.status != "voting":
+            messages.warning(request, "This book is not in the voting stage.")
+            return redirect("books:book_list")
+
+        book.status = "reading"
+        book.save()
+
+        group, created = ReadingGroup.objects.get_or_create(book=book)
+        if created:
+            group.participants.set(book.votes.all())
+
+        messages.success(
+            request, f"Voting closed! '{book.title}' is now in reading status."
+        )
+        return redirect("books:group_detail", pk=group.pk)
