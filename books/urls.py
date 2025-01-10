@@ -7,6 +7,7 @@ from .views import (
     BookUpdateView,
     BookDeleteView,
     GroupDetailView,
+    GroupListView,
     JoinGroupView,
     LeaveGroupView,
     ToggleVoteView,
@@ -29,4 +30,5 @@ urlpatterns = [
     path("group/<int:pk>/", GroupDetailView.as_view(), name="group_detail"),
     path("group/<int:pk>/join/", JoinGroupView.as_view(), name="join_group"),
     path("group/<int:pk>/leave/", LeaveGroupView.as_view(), name="leave_group"),
+    path("groups/", GroupListView.as_view(), name="group_list"),
 ]
