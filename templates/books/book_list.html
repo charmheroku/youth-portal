@@ -1,15 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
-    <h1>Book List</h1>
-    <a href="{% url 'books:book_create' %}">Add New Book</a>
-    <hr>
-    <ul>
-        {% for book in books %}
-        <li>
-            <a href="{% url 'books:book_detail' book.pk %}">
-                {{ book.title }} ({{ book.author }}) - {{ book.status }}
-            </a>
-        </li>
-    {% endfor %}
-    </ul>
+<h1>Book List</h1>
+
+<ul>
+  {% for book in books %}
+    <li>
+      <img src="{{ book.cover.url }}" alt="Cover" style="max-width: 100px;">
+      <a href="{% url 'books:book_detail' book.pk %}">{{ book.title }}</a> by {{ book.author }}
+
+      <br>
+      <strong>Votes:</strong> {{ book.total_votes }}
+
+      {% if request.user.is_authenticated %}
+        <form action="{% url 'books:toggle_vote' book.pk %}" method="post">
+          {% csrf_token %}
+          {% if request.user in book.votes.all %}
+            <button type="submit">✅ Voted (Remove)</button>
+          {% else %}
+            <button type="submit">Vote</button>
+          {% endif %}
+        </form>
+      {% endif %}
+    </li>
+  {% endfor %}
+</ul>
 {% endblock %}
