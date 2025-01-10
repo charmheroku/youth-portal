@@ -160,3 +160,20 @@ class JoinGroupView(LoginRequiredMixin, View):
         group.participants.add(request.user)
         messages.success(request, "You joined the reading group.")
         return redirect("books:group_detail", pk=group.pk)
+
+
+class LeaveGroupView(LoginRequiredMixin, View):
+    """
+    User leaves the reading group.
+    """
+
+    def post(self, request, *args, **kwargs):
+        group = get_object_or_404(ReadingGroup, pk=kwargs["pk"])
+
+        if request.user not in group.participants.all():
+            messages.warning(request, "You are not a part of this group.")
+            return redirect("books:group_detail", pk=group.pk)
+
+        group.participants.remove(request.user)
+        messages.success(request, "You left the reading group.")
+        return redirect("books:group_list")
