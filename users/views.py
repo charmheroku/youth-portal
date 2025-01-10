@@ -1,3 +1,4 @@
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth import login
@@ -12,13 +13,12 @@ class UserSignUpView(CreateView):
     model = CustomUser
     form_class = SignUpForm
     template_name = "users/signup.html"
-    success_url = reverse_lazy("users:profile")
 
     def form_valid(self, form):
         """Log in user after successful signup"""
         self.object = form.save()
         login(self.request, self.object)
-        return super().form_valid(form)
+        return redirect(reverse_lazy("users:profile"))
 
 
 class ProfileView(LoginRequiredMixin, DetailView):

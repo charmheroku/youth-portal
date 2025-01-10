@@ -26,6 +26,7 @@ DJANGO_APPS = [
 
 PROJECT_APPS = [
     "users",
+    "books",
 ]
 
 THIRD_PART_APPS = []
