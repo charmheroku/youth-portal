@@ -94,7 +94,9 @@ class CreateReadingGroup(AdminRequiredMixin, View):
         book = get_object_or_404(Book, pk=kwargs["pk"])
 
         if book.status == "reading":
-            messages.warning(request, "This book is already being read. You cannot vote for it.")
+            messages.warning(
+                request, "This book is already being read. You cannot vote for it."
+            )
             return redirect("books:book_list")
 
         if book.status != "voting":
@@ -133,3 +135,28 @@ class GroupDetailView(LoginRequiredMixin, DetailView):
         Retrieves the group based on the provided ID.
         """
         return get_object_or_404(ReadingGroup, pk=self.kwargs["pk"])
+
+
+class JoinGroupView(LoginRequiredMixin, View):
+    """
+    User joins the reading group.
+    """
+
+    def post(self, request, *args, **kwargs):
+        group = get_object_or_404(ReadingGroup, pk=kwargs["pk"])
+
+        if request.user.reading_groups.exists():
+            messages.warning(
+                request,
+                "You are already in another reading group. "
+                "Leave the current group first.",
+            )
+            return redirect("books:group_detail", pk=group.pk)
+
+        if not group.is_active:
+            messages.error(request, "This reading group is closed.")
+            return redirect("books:group_detail", pk=group.pk)
+
+        group.participants.add(request.user)
+        messages.success(request, "You joined the reading group.")
+        return redirect("books:group_detail", pk=group.pk)
