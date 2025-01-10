@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect
+from django.db.models import Count
 from django.contrib import messages
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
@@ -190,6 +191,10 @@ class GroupListView(LoginRequiredMixin, ListView):
 
     def get_queryset(self):
         """
-        Returns only active groups.
+        Returns only active groups and precomputes participant count.
         """
-        return ReadingGroup.objects.filter(is_active=True).select_related("book")
+        return (
+            ReadingGroup.objects.filter(is_active=True)
+            .select_related("book")
+            .annotate(participant_count=Count("participants"))
+        )
