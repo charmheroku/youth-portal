@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+    <h1>{{ book.title }}</h1>
+    <p><strong>Author:</strong> {{ book.author }}</p>
+    <p><strong>Status:</strong> {{ book.status }}</p>
+{% if book.cover %}
+    <img src="{{ book.cover.url }}" alt="Cover" style="max-width: 200px;">
+{% endif %}
+    <p>{{ book.description }}</p>
+
+    <a href="{% url 'books:book_update' book.pk %}">Edit</a> |
+    <a href="{% url 'books:book_delete' book.pk %}">Delete</a> |
+    <a href="{% url 'books:book_list' %}">Back to list</a>
+{% endblock %}
