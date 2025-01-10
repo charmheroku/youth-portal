@@ -21,6 +21,15 @@
           {% endif %}
         </form>
       {% endif %}
+
+      <!-- Кнопка для админа -->
+      {% if request.user.is_staff and book.status == "voting" %}
+        <form action="{% url 'books:finalize_voting' book.pk %}" method="post">
+          {% csrf_token %}
+          <button type="submit">Finalize Voting & Start Group</button>
+        </form>
+      {% endif %}
+      
     </li>
   {% endfor %}
 </ul>
