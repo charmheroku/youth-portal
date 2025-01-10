@@ -93,6 +93,10 @@ class CreateReadingGroup(AdminRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         book = get_object_or_404(Book, pk=kwargs["pk"])
 
+        if book.status == "reading":
+            messages.warning(request, "This book is already being read. You cannot vote for it.")
+            return redirect("books:book_list")
+
         if book.status != "voting":
             messages.warning(request, "This book is not in the voting stage.")
             return redirect("books:book_list")
