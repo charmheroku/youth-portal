@@ -1,5 +1,6 @@
 from django.urls import path
 from .views import (
+    CreateReadingGroup,
     BookListView,
     BookDetailView,
     BookCreateView,
@@ -17,4 +18,9 @@ urlpatterns = [
     path("<int:pk>/update/", BookUpdateView.as_view(), name="book_update"),
     path("<int:pk>/delete/", BookDeleteView.as_view(), name="book_delete"),
     path("vote/<int:pk>/", ToggleVoteView.as_view(), name="toggle_vote"),
+    path(
+        "finalize-voting/<int:pk>/",
+        CreateReadingGroup.as_view(),
+        name="finalize_voting",
+    ),
 ]
