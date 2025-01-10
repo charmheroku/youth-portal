@@ -12,14 +12,18 @@
       <strong>Votes:</strong> {{ book.total_votes }}
 
       {% if request.user.is_authenticated %}
-        <form action="{% url 'books:toggle_vote' book.pk %}" method="post">
-          {% csrf_token %}
-          {% if request.user in book.votes.all %}
-            <button type="submit">✅ Voted (Remove)</button>
-          {% else %}
-            <button type="submit">Vote</button>
-          {% endif %}
-        </form>
+        {% if book.status == "voting" %}
+          <form action="{% url 'books:toggle_vote' book.pk %}" method="post">
+            {% csrf_token %}
+            {% if request.user in book.votes.all %}
+              <button type="submit">✅ Voted (Remove)</button>
+            {% else %}
+              <button type="submit">Vote</button>
+            {% endif %}
+          </form>
+        {% else %}
+          <p><strong>Already in Reading</strong></p>
+        {% endif %}
       {% endif %}
 
       <!-- Кнопка для админа -->
