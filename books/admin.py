@@ -1,5 +1,5 @@
 from django.contrib import admin
-from books.models import Book, Vote
+from books.models import Book, ReadingGroup, Vote
 
 
 @admin.register(Book)
@@ -29,3 +29,14 @@ class VoteAdmin(admin.ModelAdmin):
     list_display = ("user", "book", "created_at")
     list_filter = ("created_at",)
     search_fields = ("user__email", "book__title")
+
+
+@admin.register(ReadingGroup)
+class ReadingGroupAdmin(admin.ModelAdmin):
+    """
+    Admin panel for managing reading groups.
+    """
+
+    list_display = ("book", "is_active", "created_at")
+    list_filter = ("is_active",)
+    search_fields = ("book__title",)
