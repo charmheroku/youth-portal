@@ -6,6 +6,7 @@ from .views import (
     BookCreateView,
     BookUpdateView,
     BookDeleteView,
+    GroupDetailView,
     ToggleVoteView,
 )
 
@@ -23,4 +24,5 @@ urlpatterns = [
         CreateReadingGroup.as_view(),
         name="finalize_voting",
     ),
+    path("group/<int:pk>/", GroupDetailView.as_view(), name="group_detail"),
 ]

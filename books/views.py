@@ -113,3 +113,19 @@ class CreateReadingGroup(AdminRequiredMixin, View):
                 request, f"Voting closed! '{book.title}' is now in reading status."
             )
         return redirect("books:group_detail", pk=group.pk)
+
+
+class GroupDetailView(LoginRequiredMixin, DetailView):
+    """
+    Displays details about a reading group.
+    """
+
+    model = ReadingGroup
+    template_name = "books/group_detail.html"
+    context_object_name = "group"
+
+    def get_object(self):
+        """
+        Retrieves the group based on the provided ID.
+        """
+        return get_object_or_404(ReadingGroup, pk=self.kwargs["pk"])
