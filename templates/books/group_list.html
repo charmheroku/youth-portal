@@ -10,7 +10,7 @@
                     <img src="{{ group.book.cover.url }}" alt="Book Cover" style="max-width: 100px;">
                     <strong>{{ group.book.title }}</strong>
                 </a>
-                <p><strong>Participants:</strong> {{ group.participants.count }}</p>
+                <p><strong>Participants:</strong> {{ group.participant_count }}</p>
             </li>
         {% endfor %}
     </ul>
