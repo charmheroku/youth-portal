@@ -101,10 +101,15 @@ class CreateReadingGroup(AdminRequiredMixin, View):
         book.save()
 
         group, created = ReadingGroup.objects.get_or_create(book=book)
-        if created:
+        if not created:
+            messages.warning(
+                request,
+                f"A reading group already exists for '{book.title}'."
+                "Users can join manually.",
+            )
+        else:
             group.participants.set(book.votes.all())
-
-        messages.success(
-            request, f"Voting closed! '{book.title}' is now in reading status."
-        )
+            messages.success(
+                request, f"Voting closed! '{book.title}' is now in reading status."
+            )
         return redirect("books:group_detail", pk=group.pk)
