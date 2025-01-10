@@ -177,3 +177,19 @@ class LeaveGroupView(LoginRequiredMixin, View):
         group.participants.remove(request.user)
         messages.success(request, "You left the reading group.")
         return redirect("books:group_list")
+
+
+class GroupListView(LoginRequiredMixin, ListView):
+    """
+    Displays a list of all active reading groups.
+    """
+
+    model = ReadingGroup
+    template_name = "books/group_list.html"
+    context_object_name = "groups"
+
+    def get_queryset(self):
+        """
+        Returns only active groups.
+        """
+        return ReadingGroup.objects.filter(is_active=True).select_related("book")
