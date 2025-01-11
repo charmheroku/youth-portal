@@ -1,14 +1,21 @@
 {% extends "base.html" %}
+
 {% block content %}
     <h1>{{ book.title }}</h1>
     <p><strong>Author:</strong> {{ book.author }}</p>
-    <p><strong>Status:</strong> {{ book.status }}</p>
-{% if book.cover %}
-    <img src="{{ book.cover.url }}" alt="Cover" style="max-width: 200px;">
-{% endif %}
-    <p>{{ book.description }}</p>
+    <p><strong>Published:</strong> {{ book.published_year }}</p>
+    <p><strong>Description:</strong> {{ book.description }}</p>
 
-    <a href="{% url 'books:book_update' book.pk %}">Edit</a> |
-    <a href="{% url 'books:book_delete' book.pk %}">Delete</a> |
-    <a href="{% url 'books:book_list' %}">Back to list</a>
+    {% if book.cover %}
+        <img src="{{ book.cover.url }}" alt="{{ book.title }} cover" style="max-width: 200px;">
+    {% endif %}
+
+    <!-- Кнопки для редактирования и удаления (видны только админам) -->
+    {% if request.user.is_staff %}
+        <a href="{% url 'books:book_update' book.pk %}" class="btn btn-primary">Edit</a>
+        <a href="{% url 'books:book_delete' book.pk %}" class="btn btn-danger">Delete</a>
+    {% endif %}
+
+    <a href="{% url 'books:book_list' %}" class="btn btn-secondary">Back to List</a>
 {% endblock %}
+
