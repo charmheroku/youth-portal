@@ -200,21 +200,6 @@ class GroupListView(LoginRequiredMixin, ListView):
         )
 
 
-class ReadingSprintListView(LoginRequiredMixin, ListView):
-    model = ReadingSprint
-    template_name = "books/sprint_list.html"
-    context_object_name = "sprints"
-
-    def get_queryset(self):
-        group_id = self.kwargs.get("group_id")
-        return ReadingSprint.objects.filter(group_id=group_id).order_by("start_date")
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["group_id"] = self.kwargs.get("group_id")
-        return context
-
-
 class ReadingSprintDetailView(LoginRequiredMixin, DetailView):
     model = ReadingSprint
     template_name = "books/sprint_detail.html"
@@ -233,7 +218,7 @@ class ReadingSprintCreateView(AdminRequiredMixin, CreateView):
         sprint.group = group
         sprint.save()
         messages.success(self.request, "Reading sprint created successfully.")
-        return redirect("books:sprint_list", group_id=group.id)
+        return redirect("books:group_detail", pk=group.id)
 
 
 class ReadingSprintUpdateView(AdminRequiredMixin, UpdateView):
