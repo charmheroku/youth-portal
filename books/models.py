@@ -1,3 +1,4 @@
+from django.utils import timezone
 from django.conf import settings
 from django.db import models
 
@@ -62,3 +63,28 @@ class ReadingGroup(models.Model):
 
     def __str__(self):
         return f"Reading Group for {self.book.title}"
+
+
+class ReadingSprint(models.Model):
+    """
+    Splits the reading into time-limited sprints (chapters/pages).
+    """
+
+    group = models.ForeignKey(
+        ReadingGroup, on_delete=models.CASCADE, related_name="sprints"
+    )
+    name = models.CharField(max_length=255)
+    start_date = models.DateField(default=timezone.now)
+    end_date = models.DateField(blank=True, null=True)
+    chapters = models.CharField(
+        max_length=255,
+        blank=True,
+        help_text="Example: 'Chapters 1–3' or 'Pages 10–25' or 'Block A'",
+    )
+    description = models.TextField(
+        blank=True, help_text="Detailed explanation of what this sprint covers and why."
+    )
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"{self.name} - {self.group.book.title}"
