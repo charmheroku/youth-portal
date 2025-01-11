@@ -11,8 +11,8 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
-from .models import Book, ReadingGroup, Vote
-from .forms import BookForm
+from .models import Book, ReadingGroup, ReadingSprint, Vote
+from .forms import BookForm, ReadingSprintForm
 from .mixins import AdminRequiredMixin
 
 
@@ -197,4 +197,56 @@ class GroupListView(LoginRequiredMixin, ListView):
             ReadingGroup.objects.filter(is_active=True)
             .select_related("book")
             .annotate(participant_count=Count("participants"))
+        )
+
+
+class ReadingSprintListView(LoginRequiredMixin, ListView):
+    model = ReadingSprint
+    template_name = "books/sprint_list.html"
+    context_object_name = "sprints"
+
+    def get_queryset(self):
+        group_id = self.kwargs.get("group_id")
+        return ReadingSprint.objects.filter(group_id=group_id).order_by("start_date")
+
+
+class ReadingSprintDetailView(LoginRequiredMixin, DetailView):
+    model = ReadingSprint
+    template_name = "books/sprint_detail.html"
+    context_object_name = "sprint"
+
+
+class ReadingSprintCreateView(AdminRequiredMixin, CreateView):
+    model = ReadingSprint
+    form_class = ReadingSprintForm
+    template_name = "books/sprint_form.html"
+
+    def form_valid(self, form):
+        group_id = self.kwargs.get("group_id")
+        group = get_object_or_404(ReadingGroup, id=group_id)
+        sprint = form.save(commit=False)
+        sprint.group = group
+        sprint.save()
+        messages.success(self.request, "Reading sprint created successfully.")
+        return redirect("books:sprint_list", group_id=group.id)
+
+
+class ReadingSprintUpdateView(AdminRequiredMixin, UpdateView):
+    model = ReadingSprint
+    form_class = ReadingSprintForm
+    template_name = "books/sprint_form.html"
+
+    def form_valid(self, form):
+        sprint = form.save()
+        messages.success(self.request, "Reading sprint updated successfully.")
+        return redirect("books:sprint_detail", pk=sprint.id)
+
+
+class ReadingSprintDeleteView(AdminRequiredMixin, DeleteView):
+    model = ReadingSprint
+    template_name = "books/sprint_confirm_delete.html"
+
+    def get_success_url(self):
+        return reverse_lazy(
+            "books:sprint_list", kwargs={"group_id": self.object.group.id}
         )
