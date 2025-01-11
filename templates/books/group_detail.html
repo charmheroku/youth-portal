@@ -30,5 +30,17 @@
   {% endif %}
 {% endif %}
 
+<hr>
+
+<h2>Reading Sprints</h2>
+
+{% include "books/_sprint_list.html" with sprints=group.sprints.all group_id=group.id %}
+
+{% if request.user.is_staff %}
+  <a href="{% url 'books:sprint_create' group_id=group.id %}" class="btn btn-primary">
+    ➕ Add New Sprint
+  </a>
+{% endif %}
+
 <a href="{% url 'books:group_list' %}">Back to Groups</a>
 {% endblock %}

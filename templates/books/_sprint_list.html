@@ -1,0 +1,11 @@
+<ul>
+  {% for sprint in sprints %}
+    <li>
+      <a href="{% url 'books:sprint_detail' sprint.id %}">{{ sprint.name }}</a>
+      ({{ sprint.start_date }} - {{ sprint.end_date }})<br>
+      Chapters: {{ sprint.chapters }}
+    </li>
+  {% empty %}
+    <p>No sprints available.</p>
+  {% endfor %}
+</ul>
