@@ -209,6 +209,11 @@ class ReadingSprintListView(LoginRequiredMixin, ListView):
         group_id = self.kwargs.get("group_id")
         return ReadingSprint.objects.filter(group_id=group_id).order_by("start_date")
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["group_id"] = self.kwargs.get("group_id")
+        return context
+
 
 class ReadingSprintDetailView(LoginRequiredMixin, DetailView):
     model = ReadingSprint
