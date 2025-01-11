@@ -15,4 +15,4 @@ class AdminRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
         messages.warning(
             self.request, "You do not have permission to access this page."
         )
-        return redirect("books:list")
+        return redirect("books:book_list")
