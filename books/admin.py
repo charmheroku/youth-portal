@@ -1,5 +1,5 @@
 from django.contrib import admin
-from books.models import Book, ReadingGroup, Vote
+from books.models import Book, ReadingGroup, ReadingSprint, Vote
 
 
 @admin.register(Book)
@@ -40,3 +40,10 @@ class ReadingGroupAdmin(admin.ModelAdmin):
     list_display = ("book", "is_active", "created_at")
     list_filter = ("is_active",)
     search_fields = ("book__title",)
+
+
+@admin.register(ReadingSprint)
+class ReadingSprintAdmin(admin.ModelAdmin):
+    list_display = ("name", "group", "description", "start_date", "end_date")
+    list_filter = ("group", "start_date", "end_date")
+    search_fields = ("name", "group__book__title")
