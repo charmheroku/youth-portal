@@ -13,18 +13,20 @@
 
       {% if request.user.is_authenticated %}
         {% if book.status == "voting" %}
-          <form action="{% url 'books:toggle_vote' book.pk %}" method="post">
-            {% csrf_token %}
-            {% if request.user in book.votes.all %}
-              <button type="submit">✅ Voted (Remove)</button>
-            {% else %}
-              <button type="submit">Vote</button>
-            {% endif %}
-          </form>
+            <form action="{% url 'books:toggle_vote' book.pk %}" method="post">
+                {% csrf_token %}
+                {% if request.user in book.votes.all %}
+                    <button type="submit">✅ Voted (Remove)</button>
+                {% else %}
+                    <button type="submit">Vote</button>
+                {% endif %}
+            </form>
+        {% elif book.status == "reading" %}
+            <p><strong>Already in Reading</strong></p>
         {% else %}
-          <p><strong>Already in Reading</strong></p>
+            <p><strong>This book is not available for voting or reading</strong></p>
         {% endif %}
-      {% endif %}
+    {% endif %}
 
       <!-- Кнопка для админа -->
       {% if request.user.is_staff and book.status == "voting" %}
