@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Sprints in Group #{{ group_id }}</h2>
+<ul>
+  {% for sprint in sprints %}
+    <li>
+      <a href="{% url 'books:sprint_detail' sprint.id %}">{{ sprint.name }}</a> 
+      ({{ sprint.start_date }} - {{ sprint.end_date }})<br>
+      Chapters: {{ sprint.chapters }}
+    </li>
+  {% endfor %}
+</ul>
+
+{% if request.user.is_staff %}
+  <a href="{% url 'books:sprint_create' group_id=group_id %}">Create new sprint</a>
+{% endif %}
+{% endblock %}

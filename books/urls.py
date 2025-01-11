@@ -10,6 +10,11 @@ from .views import (
     GroupListView,
     JoinGroupView,
     LeaveGroupView,
+    ReadingSprintCreateView,
+    ReadingSprintDeleteView,
+    ReadingSprintDetailView,
+    ReadingSprintListView,
+    ReadingSprintUpdateView,
     ToggleVoteView,
 )
 
@@ -31,4 +36,25 @@ urlpatterns = [
     path("group/<int:pk>/join/", JoinGroupView.as_view(), name="join_group"),
     path("group/<int:pk>/leave/", LeaveGroupView.as_view(), name="leave_group"),
     path("groups/", GroupListView.as_view(), name="group_list"),
+    path(
+        "group/<int:group_id>/sprints/",
+        ReadingSprintListView.as_view(),
+        name="sprint_list",
+    ),
+    path("sprint/<int:pk>/", ReadingSprintDetailView.as_view(), name="sprint_detail"),
+    path(
+        "group/<int:group_id>/sprint/create/",
+        ReadingSprintCreateView.as_view(),
+        name="sprint_create",
+    ),
+    path(
+        "sprint/<int:pk>/update/",
+        ReadingSprintUpdateView.as_view(),
+        name="sprint_update",
+    ),
+    path(
+        "sprint/<int:pk>/delete/",
+        ReadingSprintDeleteView.as_view(),
+        name="sprint_delete",
+    ),
 ]
