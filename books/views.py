@@ -36,7 +36,7 @@ class BookDetailView(DetailView):
     context_object_name = "book"
 
 
-class BookCreateView(CreateView):
+class BookCreateView(AdminRequiredMixin, CreateView):
     """
     Allows admin (or staff) to create a new book.
     """
@@ -47,7 +47,7 @@ class BookCreateView(CreateView):
     success_url = reverse_lazy("books:book_list")
 
 
-class BookUpdateView(UpdateView):
+class BookUpdateView(AdminRequiredMixin, UpdateView):
     """
     Allows admin (or staff) to edit an existing book.
     """
@@ -58,7 +58,7 @@ class BookUpdateView(UpdateView):
     success_url = reverse_lazy("books:book_list")
 
 
-class BookDeleteView(DeleteView):
+class BookDeleteView(AdminRequiredMixin, DeleteView):
     """
     Allows admin (or staff) to delete a book.
     """
