@@ -282,6 +282,12 @@ class MarkSprintAsReadView(LoginRequiredMixin, View):
             messages.error(request, "You are not a member of this reading group.")
             return redirect("books:sprint_detail", pk=sprint_id)
 
+        if not SprintIdea.objects.filter(sprint=sprint, user=request.user).exists():
+            messages.error(
+                request, "You must submit at least one idea before marking as read!"
+            )
+            return redirect("books:sprint_detail", pk=sprint_id)
+
         progress, created = SprintProgress.objects.get_or_create(
             user=request.user,
             sprint=sprint,
