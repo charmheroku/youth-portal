@@ -116,3 +116,43 @@ class SprintProgress(models.Model):
             f"{self.user.email} - {self.sprint.name} "
             f"({'Read' if self.is_read else 'Not Read'})"
         )
+
+
+class SprintIdea(models.Model):
+    """
+    Represents a key idea extracted by a participant from a reading sprint.
+    """
+
+    sprint = models.ForeignKey(
+        ReadingSprint, on_delete=models.CASCADE, related_name="ideas"
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="sprint_ideas"
+    )
+    title = models.CharField(max_length=255)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        unique_together = ("sprint", "user")
+
+    def __str__(self):
+        return f"Idea by {self.user.email} - {self.title} ({self.sprint.name})"
+
+
+class IdeaDiscussion(models.Model):
+    """
+    Discussion under a specific sprint idea.
+    """
+
+    idea = models.ForeignKey(
+        SprintIdea, on_delete=models.CASCADE, related_name="comments"
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="idea_comments"
+    )
+    comment = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return f"Comment by {self.user.email} on '{self.idea.title}'"
