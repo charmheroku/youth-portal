@@ -1,5 +1,13 @@
 from django.contrib import admin
-from books.models import Book, ReadingGroup, ReadingSprint, SprintProgress, Vote
+from books.models import (
+    Book,
+    IdeaDiscussion,
+    ReadingGroup,
+    ReadingSprint,
+    SprintIdea,
+    SprintProgress,
+    Vote,
+)
 
 
 @admin.register(Book)
@@ -54,3 +62,15 @@ class SprintProgressAdmin(admin.ModelAdmin):
     list_display = ("user", "sprint", "is_read", "completed_at", "updated_at")
     list_filter = ("is_read", "sprint__group")
     search_fields = ("user__email", "sprint__name")
+
+
+@admin.register(SprintIdea)
+class SprintIdeaAdmin(admin.ModelAdmin):
+    list_display = ("sprint", "user", "title", "created_at")
+    search_fields = ("title", "user__email", "sprint__name")
+
+
+@admin.register(IdeaDiscussion)
+class IdeaDiscussionAdmin(admin.ModelAdmin):
+    list_display = ("idea", "user", "created_at")
+    search_fields = ("idea__title", "user__email")
