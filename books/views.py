@@ -1,4 +1,4 @@
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, render
 from django.db.models import Count
 from django.contrib import messages
 from django.utils import timezone
@@ -12,8 +12,8 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
-from .models import Book, ReadingGroup, ReadingSprint, SprintProgress, Vote
-from .forms import BookForm, ReadingSprintForm
+from .models import Book, ReadingGroup, ReadingSprint, SprintIdea, SprintProgress, Vote
+from .forms import BookForm, IdeaDiscussionForm, ReadingSprintForm, SprintIdeaForm
 from .mixins import AdminRequiredMixin
 
 
@@ -298,3 +298,57 @@ class MarkSprintAsReadView(LoginRequiredMixin, View):
             messages.info(request, "You have already marked this sprint as read.")
 
         return redirect("books:group_detail", pk=group_id)
+
+
+class SprintIdeaCreateView(LoginRequiredMixin, View):
+    """
+    Each participant must add at least one idea for a sprint.
+    """
+
+    def get(self, request, sprint_id):
+        form = SprintIdeaForm()
+        return render(
+            request, "books/idea_form.html", {"form": form, "sprint_id": sprint_id}
+        )
+
+    def post(self, request, sprint_id):
+        sprint = get_object_or_404(ReadingSprint, id=sprint_id)
+
+        if request.user not in sprint.group.participants.all():
+            messages.error(request, "You are not in this group!")
+            return redirect("books:sprint_detail", pk=sprint_id)
+
+        form = SprintIdeaForm(request.POST)
+        if form.is_valid():
+            idea = form.save(commit=False)
+            idea.sprint = sprint
+            idea.user = request.user
+            idea.save()
+            messages.success(request, "Your idea has been added!")
+        else:
+            messages.error(request, "Invalid form data.")
+        return redirect("books:sprint_detail", pk=sprint_id)
+
+
+class IdeaDiscussionCreateView(LoginRequiredMixin, View):
+    """
+    Adds a comment under a specific sprint idea.
+    """
+
+    def post(self, request, idea_id):
+        idea = get_object_or_404(SprintIdea, id=idea_id)
+
+        if request.user not in idea.sprint.group.participants.all():
+            messages.error(request, "You are not in this group!")
+            return redirect("books:sprint_detail", pk=idea.sprint.id)
+
+        form = IdeaDiscussionForm(request.POST)
+        if form.is_valid():
+            discussion = form.save(commit=False)
+            discussion.idea = idea
+            discussion.user = request.user
+            discussion.save()
+            messages.success(request, "Comment added.")
+        else:
+            messages.error(request, "Invalid form data.")
+        return redirect("books:sprint_detail", pk=idea.sprint.id)
