@@ -8,6 +8,7 @@ from .views import (
     BookDeleteView,
     GroupDetailView,
     GroupListView,
+    IdeaDiscussionCreateView,
     JoinGroupView,
     LeaveGroupView,
     MarkSprintAsReadView,
@@ -15,6 +16,7 @@ from .views import (
     ReadingSprintDeleteView,
     ReadingSprintDetailView,
     ReadingSprintUpdateView,
+    SprintIdeaCreateView,
     ToggleVoteView,
 )
 
@@ -56,5 +58,15 @@ urlpatterns = [
         "sprint/<int:sprint_id>/<int:group_id>/mark-read/",
         MarkSprintAsReadView.as_view(),
         name="mark_sprint_read",
+    ),
+    path(
+        "sprint/<int:sprint_id>/idea/add/",
+        SprintIdeaCreateView.as_view(),
+        name="idea_add",
+    ),
+    path(
+        "idea/<int:idea_id>/comment/add/",
+        IdeaDiscussionCreateView.as_view(),
+        name="idea_comment_add",
     ),
 ]
