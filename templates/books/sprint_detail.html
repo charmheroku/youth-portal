@@ -36,8 +36,12 @@
   <p>No ideas yet.</p>
 {% endif %}
 
-{% if request.user in sprint.group.participants.all %}
-  <a href="{% url 'books:idea_add' sprint.id %}">➕ Add a new Idea</a>
+{% if not user_has_idea %}
+  <a href="{% url 'books:idea_add' sprint.id %}" class="btn btn-success">
+    ➕ Add Your Idea
+  </a>
+{% else %}
+  <p><strong>You have already submitted an idea for this sprint.</strong></p>
 {% endif %}
 
 {% if request.user.is_staff %}
