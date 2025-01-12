@@ -4,6 +4,16 @@
       <a href="{% url 'books:sprint_detail' sprint.id %}">{{ sprint.name }}</a>
       ({{ sprint.start_date }} - {{ sprint.end_date }})<br>
       Chapters: {{ sprint.chapters }}
+      {% if request.user in sprint.group.participants.all %}
+        {% if sprint.id in completed_sprint_ids %}
+          <span>✔ Read</span>
+        {% else %}
+          <form action="{% url 'books:mark_sprint_read' sprint.id group_id%}" method="post">
+            {% csrf_token %}
+            <button type="submit">✔ Mark as Read</button>
+          </form>
+        {% endif %}
+      {% endif %}
     </li>
   {% empty %}
     <p>No sprints available.</p>

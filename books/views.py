@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404, redirect
 from django.db.models import Count
 from django.contrib import messages
+from django.utils import timezone
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views import View
@@ -11,7 +12,7 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
-from .models import Book, ReadingGroup, ReadingSprint, Vote
+from .models import Book, ReadingGroup, ReadingSprint, SprintProgress, Vote
 from .forms import BookForm, ReadingSprintForm
 from .mixins import AdminRequiredMixin
 
@@ -137,6 +138,17 @@ class GroupDetailView(LoginRequiredMixin, DetailView):
         """
         return get_object_or_404(ReadingGroup, pk=self.kwargs["pk"])
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        context["completed_sprint_ids"] = set(
+            SprintProgress.objects.filter(
+                user=self.request.user, is_read=True
+            ).values_list("sprint_id", flat=True)
+        )
+
+        return context
+
 
 class JoinGroupView(LoginRequiredMixin, View):
     """
@@ -205,6 +217,19 @@ class ReadingSprintDetailView(LoginRequiredMixin, DetailView):
     template_name = "books/sprint_detail.html"
     context_object_name = "sprint"
 
+    def get_context_data(self, **kwargs):
+        """
+        Passes information if the user has completed this sprint.
+        """
+        context = super().get_context_data(**kwargs)
+        sprint = self.object
+
+        context["sprint_read"] = SprintProgress.objects.filter(
+            user=self.request.user, sprint=sprint, is_read=True
+        ).exists()
+
+        return context
+
 
 class ReadingSprintCreateView(AdminRequiredMixin, CreateView):
     model = ReadingSprint
@@ -240,3 +265,36 @@ class ReadingSprintDeleteView(AdminRequiredMixin, DeleteView):
         return reverse_lazy(
             "books:sprint_list", kwargs={"group_id": self.object.group.id}
         )
+
+
+class MarkSprintAsReadView(LoginRequiredMixin, View):
+    """
+    Allows a user to mark a reading sprint as completed.
+    """
+
+    def post(self, request, *args, **kwargs):
+        sprint_id = kwargs["sprint_id"]
+        group_id = kwargs["group_id"]
+        sprint = get_object_or_404(ReadingSprint, id=sprint_id)
+
+        # Check if user is a participant of the group
+        if request.user not in sprint.group.participants.all():
+            messages.error(request, "You are not a member of this reading group.")
+            return redirect("books:sprint_detail", pk=sprint_id)
+
+        progress, created = SprintProgress.objects.get_or_create(
+            user=request.user,
+            sprint=sprint,
+        )
+
+        if not progress.is_read:
+            progress.is_read = True
+            progress.completed_at = timezone.now()
+            progress.save()
+            messages.success(
+                request, "You have successfully marked this sprint as read."
+            )
+        else:
+            messages.info(request, "You have already marked this sprint as read.")
+
+        return redirect("books:group_detail", pk=group_id)
