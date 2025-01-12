@@ -1,13 +1,18 @@
 {% extends "base.html" %}
 {% block content %}
-    <h2>{{ sprint.name }}</h2>
-    <p><strong>Dates:</strong> {{ sprint.start_date }} - {{ sprint.end_date }}</p>
-    <p><strong>Chapters:</strong> {{ sprint.chapters }}</p>
+<h2>{{ sprint.name }}</h2>
+<p><strong>Dates:</strong> {{ sprint.start_date }} - {{ sprint.end_date }}</p>
+<p><strong>Chapters:</strong> {{ sprint.chapters }}</p>
 
-    {% if request.user.is_staff %}
-    <a href="{% url 'books:sprint_update' sprint.id %}">Edit</a> |
-    <a href="{% url 'books:sprint_delete' sprint.id %}">Delete</a>
-    {% endif %}
+{% if request.user in sprint.group.participants.all %}
+  {% if sprint_read %}
+    <p>You have already completed this sprint! ✔</p>
+  {% endif %}
+{% endif %}
 
-    <hr>
+{% if request.user.is_staff %}
+  <a href="{% url 'books:sprint_update' sprint.id %}">Edit</a> |
+  <a href="{% url 'books:sprint_delete' sprint.id %}">Delete</a>
+{% endif %}
+
 {% endblock %}

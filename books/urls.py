@@ -10,6 +10,7 @@ from .views import (
     GroupListView,
     JoinGroupView,
     LeaveGroupView,
+    MarkSprintAsReadView,
     ReadingSprintCreateView,
     ReadingSprintDeleteView,
     ReadingSprintDetailView,
@@ -50,5 +51,10 @@ urlpatterns = [
         "sprint/<int:pk>/delete/",
         ReadingSprintDeleteView.as_view(),
         name="sprint_delete",
+    ),
+    path(
+        "sprint/<int:sprint_id>/<int:group_id>/mark-read/",
+        MarkSprintAsReadView.as_view(),
+        name="mark_sprint_read",
     ),
 ]
