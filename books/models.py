@@ -88,3 +88,31 @@ class ReadingSprint(models.Model):
 
     def __str__(self):
         return f"{self.name} - {self.group.book.title}"
+
+
+class SprintProgress(models.Model):
+    """
+    Tracks if a user has completed reading a particular sprint.
+    """
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="sprint_progresses",
+    )
+    sprint = models.ForeignKey(
+        ReadingSprint, on_delete=models.CASCADE, related_name="progress_entries"
+    )
+    is_read = models.BooleanField(default=False)
+    completed_at = models.DateTimeField(blank=True, null=True)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        unique_together = ("user", "sprint")
+
+    def __str__(self):
+        return (
+            f"{self.user.email} - {self.sprint.name} "
+            f"({'Read' if self.is_read else 'Not Read'})"
+        )
