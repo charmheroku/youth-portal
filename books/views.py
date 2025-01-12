@@ -217,16 +217,26 @@ class ReadingSprintDetailView(LoginRequiredMixin, DetailView):
     template_name = "books/sprint_detail.html"
     context_object_name = "sprint"
 
+    def get_queryset(self):
+        """
+        Prefetch related ideas to optimize queries.
+        """
+        return super().get_queryset().prefetch_related("ideas")
+
     def get_context_data(self, **kwargs):
         """
         Passes information if the user has completed this sprint.
         """
         context = super().get_context_data(**kwargs)
+        user = self.request.user
         sprint = self.object
 
         context["sprint_read"] = SprintProgress.objects.filter(
             user=self.request.user, sprint=sprint, is_read=True
         ).exists()
+        context["user_has_idea"] = any(
+            idea.user_id == user.id for idea in sprint.ideas.all()
+        )
 
         return context
 
@@ -277,7 +287,6 @@ class MarkSprintAsReadView(LoginRequiredMixin, View):
         group_id = kwargs["group_id"]
         sprint = get_object_or_404(ReadingSprint, id=sprint_id)
 
-        # Check if user is a participant of the group
         if request.user not in sprint.group.participants.all():
             messages.error(request, "You are not a member of this reading group.")
             return redirect("books:sprint_detail", pk=sprint_id)
@@ -312,6 +321,16 @@ class SprintIdeaCreateView(LoginRequiredMixin, View):
     """
 
     def get(self, request, sprint_id):
+        sprint = get_object_or_404(ReadingSprint, id=sprint_id)
+        if SprintIdea.objects.filter(sprint=sprint, user=request.user).exists():
+            messages.warning(
+                request, "You have already submitted an idea for this sprint."
+            )
+            return redirect("books:sprint_detail", pk=sprint_id)
+
+        if request.user not in sprint.group.participants.all():
+            messages.error(request, "You are not a member of this reading group.")
+            return redirect("books:group_detail", pk=sprint.group.id)
         form = SprintIdeaForm()
         return render(
             request, "books/idea_form.html", {"form": form, "sprint_id": sprint_id}
@@ -320,8 +339,10 @@ class SprintIdeaCreateView(LoginRequiredMixin, View):
     def post(self, request, sprint_id):
         sprint = get_object_or_404(ReadingSprint, id=sprint_id)
 
-        if request.user not in sprint.group.participants.all():
-            messages.error(request, "You are not in this group!")
+        if SprintIdea.objects.filter(sprint=sprint, user=request.user).exists():
+            messages.error(
+                request, "You have already submitted an idea for this sprint."
+            )
             return redirect("books:sprint_detail", pk=sprint_id)
 
         form = SprintIdeaForm(request.POST)
