@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <section class="position-relative overflow-hidden pt-5" style="margin-top: -76px">
+        <div class="container position-relative pt-5 mt-sm-2">
+
+            {% include 'includes/search_form.html' %}
+
+            <div class="text-center my-4">
+                <h2 class="fw-bold">🔍 Search Results for "<span class="text-primary">{{ query }}</span>"</h2>
+            </div>
+
+            {% if not books and not groups and not ideas %}
+                <div class="alert alert-warning text-center">
+                    <i class="fi-alert-circle"></i> No results found. Try a different search term.
+                </div>
+            {% else %}
+
+                {% if books %}
+                    <div class="mb-4">
+                        <h3 class="fw-bold text-secondary">📚 Books</h3>
+                        <ul class="list-group shadow-sm">
+                            {% for book in books %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'books:book_detail' book.pk %}" class="text-decoration-none text-dark fw-semibold">
+                                        {{ book.title }} <span class="text-muted">by {{ book.author }}</span>
+                                    </a>
+                                    <span class="badge bg-primary rounded-pill">📖</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% if groups %}
+                    <div class="mb-4">
+                        <h3 class="fw-bold text-secondary">👥 Reading Groups</h3>
+                        <ul class="list-group shadow-sm">
+                            {% for group in groups %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'books:group_detail' group.pk %}" class="text-decoration-none text-dark fw-semibold">
+                                        {{ group.book.title }} 
+                                        <small class="text-muted">({{ group.participants.count }} participants)</small>
+                                    </a>
+                                    <span class="badge bg-success rounded-pill">👥</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+                {% if ideas %}
+                    <div class="mb-4">
+                        <h3 class="fw-bold text-secondary">💡 Ideas</h3>
+                        <ul class="list-group shadow-sm">
+                            {% for idea in ideas %}
+                                <li class="list-group-item d-flex justify-content-between align-items-center">
+                                    <a href="{% url 'books:sprint_detail' idea.sprint.pk %}" class="text-decoration-none text-dark fw-semibold">
+                                        {{ idea.title }}
+                                    </a>
+                                    <span class="badge bg-warning rounded-pill">💡</span>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                {% endif %}
+
+            {% endif %}
+        </div>
+    </section>
+{% endblock %}

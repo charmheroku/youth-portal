@@ -1,0 +1,106 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="card shadow-lg border-0">
+            <div class="card-header bg-dark text-white text-center py-4">
+                <h2 class="fw-bold text-white">{{ sprint.name }}</h2>
+                <p class="mb-0 fs-5">
+                    <span><i class="fas fa-calendar-alt"></i> <strong>Dates:</strong> {{ sprint.start_date }} - {{ sprint.end_date }}</span> |
+                    <span><i class="fas fa-book"></i> <strong>Chapters:</strong> {{ sprint.chapters }}</span>
+                </p>
+            </div>
+
+            <div class="card-body p-4">
+                <div class="row align-items-start">
+                    <div class="col-md-4 text-center">
+                        <div class="rounded overflow-hidden shadow-sm" style="width: 250px; height: 250px; background: #f8f9fa;">
+                            <img src="{{ sprint.group.book.cover.url|default:'/media/covers/default_cover.jpg' }}" 
+                                alt="Sprint Book Cover" 
+                                class="img-fluid"
+                                style="width: 100%; height: 100%; object-fit: cover;">
+                        </div>
+                    </div>
+
+                    <div class="col-md-8">
+                        <h4 class="fw-bold mb-3"><i class="fas fa-lightbulb text-warning"></i> Ideas from Participants:</h4>
+
+                        {% if sprint.ideas.all %}
+                            {% for idea in sprint.ideas.all %}
+                                <div class="card mb-4 shadow-sm">
+                                    <div class="card-body">
+                                        <div class="d-flex align-items-center mb-3">
+                                            <div class="rounded-circle bg-light d-flex align-items-center justify-content-center me-3"
+                                                style="width: 50px; height: 50px;">
+                                                <i class="fas fa-user-circle fa-2x text-primary"></i>
+                                            </div>
+                                            <div>
+                                                <h5 class="fw-bold mb-1">{{ idea.title }}</h5>
+                                                <p class="text-muted mb-0 small">{{ idea.user.email }}</p>
+                                            </div>
+                                        </div>
+                                        <p class="text-truncate" style="max-height: 4.5rem; overflow: hidden;">{{ idea.content }}</p>
+                                    </div>
+
+                                    <div class="card-footer bg-white">
+                                        <button class="btn btn-sm btn-outline-primary" type="button" data-bs-toggle="collapse" data-bs-target="#comments-{{ idea.id }}">
+                                            💬 View Comments
+                                        </button>
+                                        <div class="collapse mt-2" id="comments-{{ idea.id }}">
+                                            <ul class="list-group list-group-flush">
+                                                {% for comment in idea.comments.all %}
+                                                    <li class="list-group-item">
+                                                        <strong>{{ comment.user.email }}</strong>: {{ comment.comment }}
+                                                    </li>
+                                                {% empty %}
+                                                    <li class="list-group-item text-muted">No comments yet.</li>
+                                                {% endfor %}
+                                            </ul>
+
+                                            <form method="post" action="{% url 'books:idea_comment_add' idea.id %}" class="mt-3">
+                                                {% csrf_token %}
+                                                <div class="input-group">
+                                                    <textarea name="comment" class="form-control" rows="1" placeholder="Add a comment..."></textarea>
+                                                    <button type="submit" class="btn btn-primary">Send</button>
+                                                </div>
+                                            </form>
+                                        </div>
+                                    </div>
+                                </div>
+                            {% endfor %}
+                        {% else %}
+                            <p class="text-muted">No ideas yet.</p>
+
+                            {% if not user_has_idea %}
+                                <div class="d-flex align-items-start mt-3">
+                                    <a href="{% url 'books:idea_add' sprint.id %}" class="btn btn-success">
+                                        <i class="fas fa-plus"></i> Add Your Idea
+                                    </a>
+                                </div>
+                            {% else %}
+                                <p class="text-muted"><strong>You have already submitted an idea.</strong></p>
+                            {% endif %}
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+
+            <div class="card-footer bg-light d-flex justify-content-between align-items-center">
+                <a href="{% url 'books:book_list' %}" class="btn btn-outline-secondary btn-lg">
+                    <i class="fas fa-arrow-left"></i> Back to Sprints
+                </a>
+
+                {% if request.user.is_staff %}
+                    <div class="d-flex gap-2">
+                        <a href="{% url 'books:sprint_update' sprint.id %}" class="btn btn-warning btn-lg">
+                            <i class="fas fa-edit"></i> Edit
+                        </a>
+                        <a href="{% url 'books:sprint_delete' sprint.id %}" class="btn btn-danger btn-lg">
+                            <i class="fas fa-trash-alt"></i> Delete
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+{% endblock %}

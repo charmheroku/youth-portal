@@ -1,0 +1,39 @@
+{% if sprints %}
+    <div class="row">
+        {% for sprint in sprints %}
+            <div class="col-md-6">
+                <div class="card shadow-sm p-3 mb-4">
+                    <div class="card-body">
+                        <h4 class="card-title text-primary">{{ sprint.name }}</h4>
+                        <p><strong>📅 Dates:</strong> {{ sprint.start_date }} - {{ sprint.end_date }}</p>
+                        <p><strong>📖 Chapters:</strong> {{ sprint.chapters }}</p>
+
+                        <!-- Check if sprint is completed -->
+                        {% if request.user in group.participants.all %}
+                            {% if sprint.id in completed_sprint_ids %}
+                                <button class="btn btn-success w-100" disabled>✔ Sprint Completed</button>
+                            {% else %}
+                                <form action="{% url 'books:mark_sprint_read' sprint.pk group_id %}" method="post">
+                                    {% csrf_token %}
+                                    <button type="submit" class="btn btn-outline-primary w-100">✅ Mark as Read</button>
+                                </form>
+                            {% endif %}
+                        {% endif %}
+
+                        <a href="{% url 'books:sprint_detail' sprint.pk %}" class="btn btn-outline-secondary w-100 mt-2">📜 View Sprint</a>
+                    </div>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+{% else %}
+    <p class="alert alert-info">No sprints available yet.</p>
+{% endif %}
+
+{% if request.user.is_staff %}
+    <div class="mt-3">
+        <a href="{% url 'books:sprint_create' group_id=group_id %}" class="btn btn-primary">
+            ➕ Add New Sprint
+        </a>
+    </div>
+{% endif %}
