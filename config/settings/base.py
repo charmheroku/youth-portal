@@ -29,7 +29,10 @@ PROJECT_APPS = [
     "books",
 ]
 
-THIRD_PART_APPS = []
+THIRD_PART_APPS = [
+    "crispy_forms",
+    "crispy_bootstrap5",
+]
 
 INSTALLED_APPS = DJANGO_APPS + PROJECT_APPS + THIRD_PART_APPS
 
@@ -48,7 +51,7 @@ ROOT_URLCONF = "config.urls"
 TEMPLATES = [
     {
         "BACKEND": "django.template.backends.django.DjangoTemplates",
-        "DIRS": [BASE_DIR / "templates"],
+        "DIRS": [BASE_DIR / "templates2"],
         "APP_DIRS": True,
         "OPTIONS": {
             "context_processors": [
@@ -97,6 +100,9 @@ USE_TZ = True
 
 # Static files (CSS, JavaScript, Images)
 STATIC_URL = "static/"
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, "static"),
+]
 
 # Default primary key field type
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
@@ -109,3 +115,6 @@ LOGIN_URL = "/users/login/"
 # Media settings
 MEDIA_URL = "/media/"
 MEDIA_ROOT = BASE_DIR / "media"
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "bootstrap5"
+CRISPY_TEMPLATE_PACK = "bootstrap5"

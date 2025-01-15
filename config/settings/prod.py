@@ -14,3 +14,6 @@ DATABASES = {
         "PORT": os.getenv("POSTGRES_PORT", "5432"),
     }
 }
+
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')  # noqa: F405
+STATICFILES_DIRS = []
