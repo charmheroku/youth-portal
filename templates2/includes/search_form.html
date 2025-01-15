@@ -1,0 +1,27 @@
+<!-- Search form -->
+<form method="get" action="{% url 'books:global_search' %}" class="position-relative z-3 bg-body border rounded shadow p-2 mb-4">
+    <div class="d-flex flex-column flex-md-row gap-2 p-1">
+        <div class="d-flex flex-column flex-sm-row w-100 gap-2 gap-sm-3">
+            
+            <div class="position-relative w-100">
+                <i class="fi-search position-absolute top-50 start-0 translate-middle-y fs-xl text-secondary-emphasis ms-2"></i>
+                <input type="search" name="q" value="{{ request.GET.q|default_if_none:'' }}" class="form-control form-control-lg form-icon-start border-0 rounded-0 pe-0" placeholder="Search by Books, Groups, Ideas">
+            </div>
+
+            <hr class="d-sm-none m-0">
+            <hr class="vr d-none d-sm-block my-2">
+
+            <div class="position-relative w-100" style="max-width: 200px">
+                <select name="category" class="form-select form-select-lg form-icon-start border-0">
+                    <option value="" {% if not request.GET.category %}selected{% endif %}>🔍 All</option>
+                    <option value="books" {% if request.GET.category == "books" %}selected{% endif %}>📚 Books</option>
+                    <option value="groups" {% if request.GET.category == "groups" %}selected{% endif %}>👥 Groups</option>
+                    <option value="ideas" {% if request.GET.category == "ideas" %}selected{% endif %}>💡 Ideas</option>
+                </select>
+            </div>
+
+        </div>
+
+        <button type="submit" class="btn btn-lg btn-primary">Search</button>
+    </div>
+</form>

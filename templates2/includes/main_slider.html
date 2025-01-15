@@ -1,0 +1,71 @@
+<!-- Hero with search form and featured events slider -->
+<section class="position-relative overflow-hidden pt-5" style="margin-top: -76px">
+    <div class="container position-relative pt-5 mt-sm-2">
+
+      {% include 'includes/search_form.html' %}
+
+      <!-- Featured events slider -->
+      <div class="row position-relative z-2">
+        <div class="col-md-4 d-flex flex-column">
+          <div class="text-center text-md-start pt-3 pt-md-4 pt-lg-5 mt-xl-5 mb-4">
+            <h1 class="display-5 mt-xxl-3 mb-xxl-4">Welcome to the Book Club!</h1>
+            <p class="mb-0">Discover new books, join reading groups, and share your insights with like-minded people.</p>
+          </div>
+          <div class="d-flex justify-content-center justify-content-md-start gap-3 mt-auto pb-lg-2 mb-4 mb-md-0 mb-lg-4">
+            <button type="button" class="btn btn-icon btn-outline-secondary animate-slide-start bg-body rounded-circle" id="hero-prev" aria-label="Prev">
+              <i class="fi-chevron-left fs-lg animate-target"></i>
+            </button>
+            <button type="button" class="btn btn-icon btn-outline-secondary animate-slide-end bg-body rounded-circle" id="hero-next" aria-label="Next">
+              <i class="fi-chevron-right fs-lg animate-target"></i>
+            </button>
+          </div>
+        </div>
+        <div class="col-md-8">
+          <div class="swiper" data-swiper='{
+            "effect": "creative",
+            "loop": true,
+            "speed": 450,
+            "autoplay": {
+              "delay": 7000,
+              "disableOnInteraction": false
+            },
+            "creativeEffect": {
+              "prev": {
+                "translate": [0, 0, -800],
+                "rotate": [180, 0, 0]
+              },
+              "next": {
+                "translate": [0, 0, -800],
+                "rotate": [-180, 0, 0]
+              }
+            },
+            "navigation": {
+              "prevEl": "#hero-prev",
+              "nextEl": "#hero-next"
+            }
+          }'>
+            <div class="swiper-wrapper">
+
+              <!-- Event -->
+              <div class="swiper-slide">
+                <a class="ratio d-block bg-body-secondary rounded-4 overflow-hidden" href="single-entry-events.html" style="--fn-aspect-ratio: calc(463 / 856 * 100%)">
+                  <img src="https://images.squarespace-cdn.com/content/v1/61de4dfbce2601437d1ade9f/e149624a-5fa0-4ae5-a972-f75a0340d34f/Atomic+Habits+by+James+Clear" alt="Image">
+                </a>
+                <div class="position-absolute shadow" style="bottom: 9%; left: 7%; width: 160px; height: 86px" data-bs-theme="light">
+                  <div class="position-absolute vstack text-white z-2" style="top: 19px; left: 75px">
+                    <a class="btn btn-primary btn-lg animate-slide-end" href="#!">
+                      Join Reading Group
+                      <i class="fi-chevron-right fs-lg animate-target ms-2 me-n2"></i>
+                    </a>
+                  </div>
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <span class="position-absolute top-0 start-0 w-100 bg-body-tertiary d-lg-none" style="height: calc(100% - 20px)"></span>
+    <span class="position-absolute top-0 start-0 w-100 bg-body-tertiary d-none d-lg-block" style="height: calc(100% - 52px)"></span>
+</section>

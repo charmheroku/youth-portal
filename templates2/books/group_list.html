@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% block content %}
+
+    <div class="container mt-5">
+        <div class="mb-4">
+            <h2 class="fw-bold text-dark"><i class="fas fa-book-open"></i> Reading Groups</h2>
+            <p class="text-muted">Join a group and enjoy reading together!</p>
+        </div>
+
+        <div class="row row-cols-1 row-cols-sm-2 row-cols-md-4 g-4">
+            {% for group in groups %}
+                <div class="col">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="position-relative text-center p-3">
+                            <img src="{{ group.book.cover.url|default:'/media/covers/default_cover.jpg' }}" 
+                                alt="{{ group.book.title }}" 
+                                class="img-fluid rounded"
+                                style="width: 200px; height: 280px; object-fit: cover;">
+                        </div>
+                        
+                        <div class="card-body text-center">
+                            <h6 class="fw-bold text-dark text-truncate">
+                                <a href="{% url 'books:group_detail' group.pk %}" class="text-dark text-decoration-none stretched-link">
+                                    {{ group.book.title }}
+                                </a>
+                            </h6>
+                            <p class="text-muted small"><i class="fas fa-user"></i> <strong>By:</strong> {{ group.book.author }}</p>
+                        </div>
+
+                        <div class="card-footer bg-white text-center">
+                            <span class="badge rounded-pill {% if group.participants.count == 0 %}bg-danger{% else %}bg-primary{% endif %} fs-6">
+                                <i class="fas fa-users"></i> {{ group.participants.count }} Participants
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+
+{% endblock %}

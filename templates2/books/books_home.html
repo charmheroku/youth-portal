@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Home - Book Club{% endblock %}
+
+{% block content %}
+    
+    
+    {% include 'includes/main_slider.html' %}
+
+    <!-- Statistics Section -->
+    <div class="container my-3">
+      <div class="row">
+          <div class="col-md-3">
+              <div class="stat-card shadow-lg text-center p-4">
+                  <div class="stat-icon bg-primary text-white">
+                      <i class="fas fa-users"></i>
+                  </div>
+                  <h2 class="fw-bold">{{ total_users }}</h2>
+                  <p class="text-muted">Users</p>
+              </div>
+          </div>
+          <div class="col-md-3">
+              <div class="stat-card shadow-lg text-center p-4">
+                  <div class="stat-icon bg-success text-white">
+                      <i class="fas fa-book-reader"></i>
+                  </div>
+                  <h2 class="fw-bold">{{ total_groups_reading }}</h2>
+                  <p class="text-muted">Active Reading Groups</p>
+              </div>
+          </div>
+          <div class="col-md-3">
+              <div class="stat-card shadow-lg text-center p-4">
+                  <div class="stat-icon bg-warning text-white">
+                      <i class="fas fa-lightbulb"></i>
+                  </div>
+                  <h2 class="fw-bold">{{ total_ideas }}</h2>
+                  <p class="text-muted">Ideas Shared</p>
+              </div>
+          </div>
+          <div class="col-md-3">
+              <div class="stat-card shadow-lg text-center p-4">
+                  <div class="stat-icon bg-danger text-white">
+                      <i class="fas fa-book"></i>
+                  </div>
+                  <h2 class="fw-bold">{{ total_completed_books }}</h2>
+                  <p class="text-muted">Completed Books</p>
+              </div>
+          </div>
+      </div>
+    </div>
+
+    {% if voting_books %}
+    <section class="container-fluid py-5" style="background-color: #f1f3f5; border-top: 2px solid #dee2e6; border-bottom: 2px solid #dee2e6;">
+      <div class="container">
+        <div class="text-center mb-4">
+          <h2 class="mb-1 fw-bold">📖 Books in Voting</h2>
+          <p class="text-muted">Vote for the next book our club will read!</p>
+        </div>
+        
+        <div class="position-relative">
+          <!-- Swiper Container -->
+          <div class="swiper" data-swiper='{
+            "slidesPerView": 1,
+            "spaceBetween": 24,
+            "loop": true,
+            "navigation": {
+              "prevEl": "#voting-prev",
+              "nextEl": "#voting-next"
+            },
+            "breakpoints": {
+              "500": {
+                "slidesPerView": 2
+              },
+              "800": {
+                "slidesPerView": 3
+              },
+              "1100": {
+                "slidesPerView": 4
+              }
+            }
+          }'>
+
+            <div class="swiper-wrapper" style="min-height: 420px;">
+              {% for book in voting_books %}
+                <div class="swiper-slide" style="height: 450px; display: flex; flex-direction: column; align-items: center;">
+                  <article class="card shadow-lg border-0 p-3 text-center" style="width: 90%; height: 100%; background-color: #fff;">
+                    <div class="rounded overflow-hidden mx-auto" style="width: 200px; height: 300px;">
+                      <img src="{{ book.cover.url|default:'/media/covers/default_cover.jpg' }}" 
+                          alt="{{ book.title }}" 
+                          style="width: 100%; height: 100%; object-fit: cover; border-radius: 8px;">
+                    </div>
+                    <div class="card-body px-2">
+                      <h3 class="h5 mb-2">
+                        <a class="stretched-link text-dark fw-bold" href="{% url 'books:book_detail' book.pk %}">{{ book.title }}</a>
+                      </h3>
+                      <p class="text-muted small">{{ book.author }}</p>
+                    </div>
+                    <button class="btn btn-sm btn-outline-primary mt-auto">Vote Now</button>
+                  </article>
+                </div>
+              {% endfor %}
+            </div>
+          </div>
+
+          <!-- Navigation Buttons -->
+          <button type="button" class="btn btn-icon btn-outline-secondary animate-slide-start rounded-circle position-absolute top-50 start-0 translate-middle z-1" id="voting-prev" aria-label="Previous">
+            <i class="fi-chevron-left fs-lg"></i>
+          </button>
+          <button type="button" class="btn btn-icon btn-outline-secondary animate-slide-end rounded-circle position-absolute top-50 start-100 translate-middle z-1" id="voting-next" aria-label="Next">
+            <i class="fi-chevron-right fs-lg"></i>
+          </button>
+
+        </div>
+      </div>
+    </section>
+    {% endif %}
+
+
+    {% if latest_books %}
+    <section class="container pt-2 pt-sm-3 pt-md-4 pt-lg-5 my-xxl-3">
+      <div class="d-flex align-items-start justify-content-between gap-4 pt-5 pb-3 mb-2 mb-sm-3">
+        <h2 class="mb-0">New Books</h2>
+      </div>
+      <div class="position-relative mx-3 mx-sm-0 mb-5">
+
+        <!-- Carousel -->
+        <div class="swiper" data-swiper='{
+          "slidesPerView": 1,
+          "spaceBetween": 24,
+          "loop": true,
+          "autoHeight": true,
+          "navigation": {
+            "prevEl": "#sports-prev",
+            "nextEl": "#sports-next"
+          },
+          "breakpoints": {
+            "500": {
+              "slidesPerView": 2
+            },
+            "800": {
+              "slidesPerView": 3
+            },
+            "1100": {
+              "slidesPerView": 4
+            }
+          }
+        }'>
+          <div class="swiper-wrapper">
+          {% for book in latest_books %}
+
+            <!-- Event listing -->
+            <div class="swiper-slide">
+              <article class="card hover-effect-scale hover-effect-opacity bg-transparent border-0">
+                <div class="position-absolute top-0 end-0 z-2 hover-effect-target opacity-0 pt-1 pt-sm-0 pe-1 pe-sm-0 mt-2 mt-sm-3 me-2 me-sm-3">
+                  <button type="button" class="btn btn-sm btn-icon btn-light bg-light border-0 rounded-circle animate-pulse" aria-label="Add to wishlist">
+                    <i class="fi-heart animate-target fs-sm"></i>
+                  </button>
+                </div>
+                <div class="bg-body-tertiary rounded overflow-hidden">
+                  <div class="ratio hover-effect-target" style="--fn-aspect-ratio: calc(320 / 306 * 100%)">
+                    <img src="{{ book.cover.url|default:'/media/covers/default_cover.jpg' }}" alt="{{ book.title }}">
+                  </div>
+                </div>
+                <div class="card-body pt-3 pt-sm-4 p-0">
+                  <h3 class="h5 mb-0">
+                    <a class="hover-effect-underline stretched-link" href="single-entry-events.html">{{ book.title }}</a>
+                  </h3>
+                </div>
+              </article>
+            </div>
+
+          {% endfor %}
+          </div>
+        </div>
+
+        <!-- Prev button -->
+        <button type="button" class="btn btn-icon btn-outline-secondary animate-slide-start bg-body rounded-circle position-absolute top-50 start-0 translate-middle z-1 mt-n5" id="sports-prev" aria-label="Prev">
+          <i class="fi-chevron-left fs-lg animate-target"></i>
+        </button>
+
+        <!-- Next button -->
+        <button type="button" class="btn btn-icon btn-outline-secondary animate-slide-end bg-body rounded-circle position-absolute top-50 start-100 translate-middle z-1 mt-n5" id="sports-next" aria-label="Next">
+          <i class="fi-chevron-right fs-lg animate-target"></i>
+        </button>
+      </div>
+    </section>
+    {% endif %}
+    
+
+{% endblock %}
