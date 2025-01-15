@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+{% block content %}
+
+  <div class="container mt-5">
+      <div class="text-center mb-4">
+          <h2 class="fw-bold text-primary">{{ sprint.name }}</h2>
+          <p class="text-muted">
+              <strong>📅 Dates:</strong> {{ sprint.start_date }} - {{ sprint.end_date }} | 
+              <strong>📖 Chapters:</strong> {{ sprint.chapters }}
+          </p>
+      </div>
+
+      {% if request.user in sprint.group.participants.all %}
+          {% if sprint_read %}
+              <div class="alert alert-success text-center">
+                  🎉 You have already completed this sprint! ✔
+              </div>
+          {% endif %}
+      {% endif %}
+
+      <h3 class="mt-4 text-secondary">💡 Ideas from Participants:</h3>
+
+      {% if sprint.ideas.all %}
+          {% for idea in sprint.ideas.all %}
+              <div class="card mb-4 shadow-sm">
+                  <div class="row g-0">
+                      <!-- Иконка пользователя -->
+                      <div class="col-md-2 d-flex align-items-center justify-content-center bg-light">
+                          <div class="text-center">
+                              <i class="fas fa-user-circle fa-3x text-primary"></i>
+                              <p class="mt-2 text-muted">{{ idea.user.email }}</p>
+                          </div>
+                      </div>
+
+                      <!-- Основное содержимое -->
+                      <div class="col-md-10">
+                          <div class="card-body">
+                              <h5 class="card-title fw-bold">{{ idea.title }}</h5>
+                              <p class="card-text">{{ idea.content }}</p>
+                          </div>
+
+                          <!-- Комментарии -->
+                          <div class="card-footer bg-white">
+                              <h6 class="text-secondary">💬 Comments:</h6>
+                              <ul class="list-group list-group-flush">
+                                  {% for comment in idea.comments.all %}
+                                      <li class="list-group-item">
+                                          <strong>{{ comment.user.email }}</strong>: {{ comment.comment }}
+                                      </li>
+                                  {% empty %}
+                                      <li class="list-group-item text-muted">No comments yet.</li>
+                                  {% endfor %}
+                              </ul>
+
+                              <!-- Форма добавления комментария -->
+                              <form method="post" action="{% url 'books:idea_comment_add' idea.id %}" class="mt-3">
+                                  {% csrf_token %}
+                                  <div class="input-group">
+                                      <textarea name="comment" class="form-control" rows="1" placeholder="Add a comment..."></textarea>
+                                      <button type="submit" class="btn btn-primary">Send</button>
+                                  </div>
+                              </form>
+                          </div>
+                      </div>
+                  </div>
+              </div>
+          {% endfor %}
+      {% else %}
+          <p class="text-muted">No ideas yet.</p>
+      {% endif %}
+
+      <!-- Кнопка добавления идеи -->
+      {% if not user_has_idea %}
+          <div class="text-center mt-4">
+              <a href="{% url 'books:idea_add' sprint.id %}" class="btn btn-success btn-lg">
+                  ➕ Add Your Idea
+              </a>
+          </div>
+      {% else %}
+          <p class="text-center text-muted"><strong>You have already submitted an idea for this sprint.</strong></p>
+      {% endif %}
+
+      <!-- Админские кнопки -->
+      {% if request.user.is_staff %}
+          <div class="text-center mt-3">
+              <a href="{% url 'books:sprint_update' sprint.id %}" class="btn btn-warning">✏ Edit</a>
+              <a href="{% url 'books:sprint_delete' sprint.id %}" class="btn btn-danger">🗑 Delete</a>
+          </div>
+      {% endif %}
+  </div>
+
+{% endblock %}

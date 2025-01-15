@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block title %}Signup{% endblock %}
+
+{% block content %}
+    <div class="container mt-5 d-flex justify-content-center">
+        <div class="card shadow-lg p-4" style="max-width: 450px; width: 100%;">
+            <div class="card-header bg-primary text-white text-center">
+                <h2>📝 Sign Up</h2>
+            </div>
+            <div class="card-body">
+                <form method="post" class="needs-validation" novalidate>
+                    {% csrf_token %}
+
+                    <!-- Ошибки формы -->
+                    {% if form.errors %}
+                        <div class="alert alert-danger">
+                            <strong>Oops! Please correct the errors below:</strong>
+                            <ul>
+                                {% for field, errors in form.errors.items %}
+                                    {% for error in errors %}
+                                        <li><strong>{{ field|capfirst }}:</strong> {{ error }}</li>
+                                    {% endfor %}
+                                {% endfor %}
+                            </ul>
+                        </div>
+                    {% endif %}
+
+                    <!-- Поля формы (crispy) -->
+                    {{ form|crispy }}
+
+                    <div class="d-grid">
+                        <button type="submit" class="btn btn-success">📝 Register</button>
+                    </div>
+                </form>
+
+                <div class="text-center mt-3">
+                    <p>Already have an account? <a href="{% url 'users:login' %}" class="fw-bold">Log in here</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Дополнительные стили -->
+    <style>
+        .card {
+            border-radius: 10px;
+        }
+        .btn {
+            font-size: 18px;
+            padding: 10px;
+        }
+        .form-control {
+            border-radius: 5px;
+        }
+    </style>
+{% endblock %}
