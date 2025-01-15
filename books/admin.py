@@ -1,6 +1,7 @@
 from django.contrib import admin
 from books.models import (
     Book,
+    HeroSection,
     IdeaDiscussion,
     ReadingGroup,
     ReadingSprint,
@@ -74,3 +75,6 @@ class SprintIdeaAdmin(admin.ModelAdmin):
 class IdeaDiscussionAdmin(admin.ModelAdmin):
     list_display = ("idea", "user", "created_at")
     search_fields = ("idea__title", "user__email")
+
+
+admin.site.register(HeroSection)
