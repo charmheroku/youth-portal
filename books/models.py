@@ -18,11 +18,14 @@ class Book(models.Model):
     title = models.CharField(max_length=255)
     author = models.CharField(max_length=255)
     description = models.TextField(blank=True)
-    cover = models.ImageField(upload_to="covers/", blank=True, null=True)
+    cover = models.ImageField(
+        upload_to="covers/", default="covers/default_cover.jpg", blank=True
+    )
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default="new")
     votes = models.ManyToManyField(
         settings.AUTH_USER_MODEL, through="Vote", related_name="voted_books"
     )
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def total_votes(self):
         """
@@ -156,3 +159,14 @@ class IdeaDiscussion(models.Model):
 
     def __str__(self):
         return f"Comment by {self.user.email} on '{self.idea.title}'"
+
+
+class HeroSection(models.Model):
+    title = models.CharField(max_length=100, default="Welcome to the Book Club!")
+    subtitle = models.TextField(
+        default="Discover new books, join reading groups, and share your insights."
+    )
+    background = models.ImageField(upload_to="hero_backgrounds/", blank=True, null=True)
+
+    def __str__(self):
+        return self.title
