@@ -18,12 +18,15 @@ from .views import (
     ReadingSprintUpdateView,
     SprintIdeaCreateView,
     ToggleVoteView,
+    books_home,
+    global_search,
 )
 
 app_name = "books"
 
 urlpatterns = [
-    path("", BookListView.as_view(), name="book_list"),
+    path("", books_home, name="books_home"),
+    path("list/", BookListView.as_view(), name="book_list"),
     path("<int:pk>/", BookDetailView.as_view(), name="book_detail"),
     path("create/", BookCreateView.as_view(), name="book_create"),
     path("<int:pk>/update/", BookUpdateView.as_view(), name="book_update"),
@@ -69,4 +72,5 @@ urlpatterns = [
         IdeaDiscussionCreateView.as_view(),
         name="idea_comment_add",
     ),
+    path("search/", global_search, name="global_search"),
 ]
