@@ -1,22 +1,51 @@
 {% extends "base.html" %}
 {% block content %}
-<h1>Reading Groups</h1>
 
-{% if groups %}
-    <ul>
-        {% for group in groups %}
-            <li>
-                <a href="{% url 'books:group_detail' group.pk %}">
-                    <img src="{{ group.book.cover.url }}" alt="Book Cover" style="max-width: 100px;">
-                    <strong>{{ group.book.title }}</strong>
-                </a>
-                <p><strong>Participants:</strong> {{ group.participant_count }}</p>
-            </li>
-        {% endfor %}
-    </ul>
-{% else %}
-    <p>No active reading groups at the moment.</p>
-{% endif %}
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h1 class="fw-bold text-primary">📚 Reading Groups</h1>
+        <p class="text-muted">Join a group and enjoy reading together!</p>
+    </div>
 
-<a href="{% url 'books:book_list' %}">Back to Books</a>
+    {% if groups %}
+        <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+            {% for group in groups %}
+                <div class="col">
+                    <div class="card shadow-sm h-100">
+                        <a href="{% url 'books:group_detail' group.pk %}" class="text-decoration-none text-dark">
+                            <img src="{{ group.book.cover.url }}" alt="Book Cover" class="card-img-top" style="max-height: 200px; object-fit: cover;">
+                        </a>
+                        <div class="card-body text-center">
+                            <h5 class="card-title">
+                                <a href="{% url 'books:group_detail' group.pk %}" class="text-primary text-decoration-none">
+                                    {{ group.book.title }}
+                                </a>
+                            </h5>
+                            <p class="text-muted">👥 <strong>Participants:</strong> {{ group.participant_count }}</p>
+                        </div>
+                    </div>
+                </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-warning text-center mt-4" role="alert">
+            No active reading groups at the moment. 📖
+        </div>
+    {% endif %}
+
+    <div class="text-center mt-4">
+        <a href="{% url 'books:book_list' %}" class="btn btn-outline-secondary">⬅️ Back to Books</a>
+    </div>
+</div>
+
+<!-- Дополнительные стили -->
+<style>
+    .card {
+        transition: transform 0.2s ease-in-out;
+    }
+    .card:hover {
+        transform: scale(1.05);
+    }
+</style>
+
 {% endblock %}
