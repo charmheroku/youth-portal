@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404, redirect, render
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.contrib import messages
 from django.utils import timezone
 from django.urls import reverse_lazy
@@ -12,9 +12,101 @@ from django.views.generic import (
     UpdateView,
     DeleteView,
 )
-from .models import Book, ReadingGroup, ReadingSprint, SprintIdea, SprintProgress, Vote
+
+from users.models import CustomUser
+from .models import (
+    Book,
+    HeroSection,
+    ReadingGroup,
+    ReadingSprint,
+    SprintIdea,
+    SprintProgress,
+    Vote,
+)
 from .forms import BookForm, IdeaDiscussionForm, ReadingSprintForm, SprintIdeaForm
 from .mixins import AdminRequiredMixin
+
+
+def global_search(request):
+    query = request.GET.get("q", "").strip()
+    category = request.GET.get("category", "").strip()
+
+    books, groups, ideas = [], [], []
+
+    if query:
+        if category in ["books", ""]:
+            books = Book.objects.filter(
+                Q(title__icontains=query) | Q(author__icontains=query)
+            )
+
+        if category in ["groups", ""]:
+            groups = ReadingGroup.objects.filter(book__title__icontains=query)
+
+        if category in ["ideas", ""]:
+            ideas = SprintIdea.objects.filter(title__icontains=query)
+
+    elif category:
+        if category == "books":
+            books = Book.objects.all()
+        elif category == "groups":
+            groups = ReadingGroup.objects.all()
+        elif category == "ideas":
+            ideas = SprintIdea.objects.all()
+
+    else:
+        books = Book.objects.all()
+        groups = ReadingGroup.objects.all()
+        ideas = SprintIdea.objects.all()
+
+    return render(
+        request,
+        "books/global_search_results.html",
+        {
+            "query": query,
+            "category": category,
+            "books": books,
+            "groups": groups,
+            "ideas": ideas,
+        },
+    )
+
+
+def books_home(request):
+    """
+    Home page displaying dynamic statistics and book sliders.
+    """
+
+    total_users = CustomUser.objects.count()
+
+    total_groups_reading = ReadingGroup.objects.filter(is_active=True).count()
+
+    total_ideas = SprintIdea.objects.count()
+
+    total_completed_books = Book.objects.filter(status="finished").count()
+
+    current_book = Book.objects.filter(status="reading").order_by("-created_at").first()
+
+    latest_books = Book.objects.filter(status="new").order_by("-created_at")[:10]
+
+    voting_books = Book.objects.filter(status="voting")[:10]
+
+    completed_books = Book.objects.filter(status="finished")[:10]
+
+    hero_section = HeroSection.objects.first()
+
+    context = {
+        "total_users": total_users,
+        "total_groups_reading": total_groups_reading,
+        "total_ideas": total_ideas,
+        "total_completed_books": total_completed_books,
+        "current_book": current_book,
+        "latest_books": latest_books,
+        "voting_books": voting_books,
+        "completed_books": completed_books,
+        "hero_background": hero_section,
+    }
+
+    return render(request, "books/books_home.html", context)
 
 
 class BookListView(ListView):
@@ -25,6 +117,7 @@ class BookListView(ListView):
     model = Book
     template_name = "books/book_list.html"
     context_object_name = "books"
+    paginate_by = 2
 
 
 class BookDetailView(DetailView):
@@ -84,7 +177,7 @@ class ToggleVoteView(LoginRequiredMixin, View):
         else:
             messages.success(request, "You voted for this book!")
 
-        return redirect("books:book_list")
+        return redirect("books:book_detail", pk=book.pk)
 
 
 class CreateReadingGroup(AdminRequiredMixin, View):
@@ -116,7 +209,7 @@ class CreateReadingGroup(AdminRequiredMixin, View):
                 "Users can join manually.",
             )
         else:
-            group.participants.set(book.votes.all())
+            group.participants.add(self.request.user)
             messages.success(
                 request, f"Voting closed! '{book.title}' is now in reading status."
             )
@@ -288,11 +381,11 @@ class MarkSprintAsReadView(LoginRequiredMixin, View):
         sprint = get_object_or_404(ReadingSprint, id=sprint_id)
 
         if request.user not in sprint.group.participants.all():
-            messages.error(request, "You are not a member of this reading group.")
+            messages.warning(request, "You are not a member of this reading group.")
             return redirect("books:sprint_detail", pk=sprint_id)
 
         if not SprintIdea.objects.filter(sprint=sprint, user=request.user).exists():
-            messages.error(
+            messages.warning(
                 request, "You must submit at least one idea before marking as read!"
             )
             return redirect("books:sprint_detail", pk=sprint_id)
