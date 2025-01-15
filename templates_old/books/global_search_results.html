@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block content %}
+    <h2 class="fw-bold">🔍 Search Results for "{{ query }}"</h2>
+
+    {% include "includes/global_search_form.html" %}
+
+    {% if not books and not groups and not ideas %}
+        <p class="alert alert-warning">No results found.</p>
+    {% else %}
+        <!-- Книги -->
+        {% if books %}
+            <h3 class="fw-bold">📚 Books</h3>
+            <ul class="list-group mb-3">
+                {% for book in books %}
+                    <li class="list-group-item">
+                        <a href="{% url 'books:book_detail' book.pk %}" class="text-decoration-none">
+                            {{ book.title }} by {{ book.author }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <!-- Группы -->
+        {% if groups %}
+            <h3 class="fw-bold">👥 Reading Groups</h3>
+            <ul class="list-group mb-3">
+                {% for group in groups %}
+                    <li class="list-group-item">
+                        <a href="{% url 'books:group_detail' group.pk %}" class="text-decoration-none">
+                            {{ group.book.title }} ({{ group.participants.count }} participants)
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+ 
+    {% endif %}
+{% endblock %}
