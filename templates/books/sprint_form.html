@@ -1,10 +1,28 @@
 {% extends "base.html" %}
+{% load crispy_forms_tags %}
+
 {% block content %}
-    <h2>{{ view.object.pk|yesno:"Update Sprint,Create Sprint" }}</h2>
-    <form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-    </form>
-    <a href="javascript:history.back()">Cancel</a>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-8 col-lg-6">
+                <div class="card shadow-sm">
+                    <div class="card-header bg-primary text-white text-center">
+                        <h2 class="fw-bold">
+                            {% if view.object.pk %} Update Sprint 🚀 {% else %} Create Sprint ➕ {% endif %}
+                        </h2>
+                    </div>
+                    <div class="card-body">
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ form|crispy }}
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-success">💾 Save</button>
+                                <a href="javascript:history.back()" class="btn btn-secondary">⬅️ Cancel</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 {% endblock %}
