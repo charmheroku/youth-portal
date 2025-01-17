@@ -1,30 +1,19 @@
-from django.shortcuts import get_object_or_404, redirect, render
-from django.db.models import Count, Q
 from django.contrib import messages
-from django.utils import timezone
-from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
+from django.db.models import Count, Q
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.utils import timezone
 from django.views import View
-from django.views.generic import (
-    ListView,
-    DetailView,
-    CreateView,
-    UpdateView,
-    DeleteView,
-)
+from django.views.generic import (CreateView, DeleteView, DetailView, ListView,
+                                  UpdateView)
 
+from books.forms import (BookForm, IdeaDiscussionForm, ReadingSprintForm,
+                         SprintIdeaForm)
+from books.mixins import AdminRequiredMixin
+from books.models import (Book, HeroSection, ReadingGroup, ReadingSprint,
+                          SprintIdea, SprintProgress, Vote)
 from users.models import CustomUser
-from .models import (
-    Book,
-    HeroSection,
-    ReadingGroup,
-    ReadingSprint,
-    SprintIdea,
-    SprintProgress,
-    Vote,
-)
-from .forms import BookForm, IdeaDiscussionForm, ReadingSprintForm, SprintIdeaForm
-from .mixins import AdminRequiredMixin
 
 
 def global_search(request):
@@ -117,7 +106,7 @@ class BookListView(ListView):
     model = Book
     template_name = "books/book_list.html"
     context_object_name = "books"
-    paginate_by = 2
+    paginate_by = 5
 
 
 class BookDetailView(DetailView):
