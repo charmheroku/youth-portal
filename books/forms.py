@@ -1,5 +1,6 @@
 from django import forms
-from .models import Book, IdeaDiscussion, ReadingSprint, SprintIdea
+
+from books.models import Book, IdeaDiscussion, ReadingSprint, SprintIdea
 
 
 class BookForm(forms.ModelForm):

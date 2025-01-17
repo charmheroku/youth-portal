@@ -1,14 +1,7 @@
 from django.contrib import admin
-from books.models import (
-    Book,
-    HeroSection,
-    IdeaDiscussion,
-    ReadingGroup,
-    ReadingSprint,
-    SprintIdea,
-    SprintProgress,
-    Vote,
-)
+
+from books.models import (Book, HeroSection, IdeaDiscussion, ReadingGroup,
+                          ReadingSprint, SprintIdea, SprintProgress, Vote)
 
 
 @admin.register(Book)

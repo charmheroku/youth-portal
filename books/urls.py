@@ -1,26 +1,14 @@
 from django.urls import path
-from .views import (
-    CreateReadingGroup,
-    BookListView,
-    BookDetailView,
-    BookCreateView,
-    BookUpdateView,
-    BookDeleteView,
-    GroupDetailView,
-    GroupListView,
-    IdeaDiscussionCreateView,
-    JoinGroupView,
-    LeaveGroupView,
-    MarkSprintAsReadView,
-    ReadingSprintCreateView,
-    ReadingSprintDeleteView,
-    ReadingSprintDetailView,
-    ReadingSprintUpdateView,
-    SprintIdeaCreateView,
-    ToggleVoteView,
-    books_home,
-    global_search,
-)
+
+from books.views import (BookCreateView, BookDeleteView, BookDetailView,
+                         BookListView, BookUpdateView, CreateReadingGroup,
+                         GroupDetailView, GroupListView,
+                         IdeaDiscussionCreateView, JoinGroupView,
+                         LeaveGroupView, MarkSprintAsReadView,
+                         ReadingSprintCreateView, ReadingSprintDeleteView,
+                         ReadingSprintDetailView, ReadingSprintUpdateView,
+                         SprintIdeaCreateView, ToggleVoteView, books_home,
+                         global_search)
 
 app_name = "books"
 
