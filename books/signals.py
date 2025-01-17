@@ -1,6 +1,7 @@
 from django.db.models.signals import post_save
 from django.dispatch import receiver
-from .models import ReadingSprint, SprintProgress
+
+from books.models import ReadingSprint, SprintProgress
 
 
 @receiver(post_save, sender=ReadingSprint)
