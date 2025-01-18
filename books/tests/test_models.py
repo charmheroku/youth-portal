@@ -1,13 +1,8 @@
 from django.test import TestCase
 from django.utils import timezone
 
-from books.models import (
-    Book,
-    ReadingGroup,
-    ReadingSprint,
-    SprintProgress,
-    SprintIdea,
-)
+from books.models import (Book, ReadingGroup, ReadingSprint, SprintIdea,
+                          SprintProgress)
 from users.models import CustomUser
 
 

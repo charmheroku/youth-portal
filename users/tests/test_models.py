@@ -1,6 +1,6 @@
-from django.test import TestCase
 from django.contrib.auth import get_user_model
 from django.contrib.auth.hashers import check_password
+from django.test import TestCase
 
 from users.models import CustomUser
 
