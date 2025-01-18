@@ -93,7 +93,10 @@
 
 - **Backend**: Django, SQLite  
 - **Frontend (MVP)**: Django Templates with Bootstrap 
-- **Git Flow**: Branches `main`, `develop`, use pull requests. 
+- **Git Flow**: Branches `main`, `develop`, use pull requests.
+- **Testing**:
+      Coverage includes unit tests for backend logic and integration tests for views and templates.
+      Testing framework: Django's built-in test suite. 
 
 
 ## 🔧 Setup & Installation
