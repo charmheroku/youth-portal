@@ -1,4 +1,5 @@
 from django.test import TestCase
+
 from books.forms import BookForm, SprintIdeaForm
 from books.models import Book
 

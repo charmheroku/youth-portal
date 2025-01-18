@@ -1,7 +1,7 @@
 from django.test import TestCase
 
-from users.models import CustomUser
 from users.forms import SignUpForm
+from users.models import CustomUser
 
 
 class SignUpFormTest(TestCase):
