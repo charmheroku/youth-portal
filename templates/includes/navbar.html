@@ -1,3 +1,4 @@
+{% load static %}
 <!-- Navigation bar -->
 <header class="navbar navbar-expand-lg navbar-light bg-white shadow-sm sticky-top">
   <div class="container d-flex align-items-center justify-content-between">
@@ -45,11 +46,20 @@
           <!-- User Profile Dropdown -->
           <div class="dropdown">
               <a class="d-flex align-items-center text-decoration-none dropdown-toggle" href="#" role="button" id="profileDropdown" data-bs-toggle="dropdown" aria-expanded="false">
-                  <img src="{{ request.user.avatar.url|default:'/static/images/default-avatar.png' }}" 
-                      alt="Profile" 
+                  
+                {% if request.user.avatar %}
+                  <img src="{{ request.user.avatar.url }}"
+                      alt="Profile"
                       class="rounded-circle me-2"
                       style="width: 40px; height: 40px; object-fit: cover;"
                       width="35" height="35">
+                {% else %}
+                  <img src="{% static 'images/avatar-default.jpg' %}"
+                      alt="Default Avatar"
+                      class="rounded-circle me-2"
+                      style="width: 40px; height: 40px; object-fit: cover;"
+                      width="35" height="35">
+                {% endif %}
                   <span class="fw-bold text-dark">{{ request.user.username }}</span>
               </a>
               <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="profileDropdown">

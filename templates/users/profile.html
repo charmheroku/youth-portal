@@ -14,9 +14,9 @@
                     <div class="col-md-4 text-center">
                         <!-- Avatar -->
                         {% if user_profile.avatar %}
-                            <img src="{{ user_profile.avatar.url }}" alt="Profile Picture" class="img-thumbnail" style="max-width: 150px; border-radius: 10px;">
+                            <img src="{{ user_profile.avatar.url }}" alt="Profile Picture">
                         {% else %}
-                            <img src="{{ user_profile.avatar.url }}" alt="Profile Picture" class="img-thumbnail" style="max-width: 150px; border-radius: 10px;">
+                            <img src="{% static 'images/avatar_default.jpg' %}" alt="Default Avatar">
                         {% endif %}
                         
                         <p class="mt-3">Joined: {{ user_profile.date_joined }}</p>
